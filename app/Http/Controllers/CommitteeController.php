@@ -113,7 +113,7 @@ class CommitteeController extends Controller
             ];
         }
 
-        if($password = $password_confirm){
+        if($password == $password_confirm){
 
         Committee::insert(
             array('general_info' => $general_info,
@@ -123,7 +123,7 @@ class CommitteeController extends Controller
                 'color' => $color,
                 'status' => '1')
             ); 
-        $query = Committee::select(['id'])->where([
+        $queryComm = Committee::select(['id'])->where([
             ['general_info' , '=' , $general_info],
             ['function' , '=' , $function],
             ['banner' , '=' , $banner],
@@ -131,7 +131,7 @@ class CommitteeController extends Controller
             ['color' , '=' , $color]
             ])->get();
         
-        foreach($query as $comm){
+        foreach($queryComm as $comm){
         User::insert(
             array('name' => $name,
                 'email' => $email,
@@ -146,6 +146,20 @@ class CommitteeController extends Controller
             'email' => $member_email,
             'function' => $member_function )
             );
+
+        $queryMem = Member::select(['id'])->where([
+            ['name' , '=' , $member_name],
+            ['email', '=' , $member_email]
+            ])->get();
+
+        foreach($queryComm as $com2){
+            foreach ($queryMem as $mem) {
+                CommitteeMember::insert(
+                    array('committee' => $com2->id,
+                        'member' => $mem->id)
+                    );
+            }
+        }
 
         return ['creado ? ' => true];
 
