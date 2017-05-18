@@ -17,7 +17,7 @@ class UserController extends Controller
     {
         $query = Role::orderBy('role' , 'asc') -> get();
         foreach($query as $roles){
-            $roles->users=User::select(['user.id','user.name','user.email','role.role','committee.name as committee'])->join('role', 'user.role' , '=' , 'role.id')->join('committee', 'user.committee' , '=', 'committee.id')->where("user.role" , $roles->id)->get();
+            $roles->users=User::select(['user.id','user.name','user.email','role.role'])->join('role', 'user.role' , '=' , 'role.id')->join('committee', 'user.committee' , '=', 'committee.id')->where("user.role" , $roles->id)->get();
         }
 
         return $query;
@@ -30,7 +30,10 @@ class UserController extends Controller
             ['user.id' , '=' , $id_user]
             ])->orderBy('role' , 'asc') -> get();
         foreach($query as $roles){
-            $roles->user=User::select(['user.id','user.name','user.email','role.role','committee.name as committee'])->join('role', 'user.role' , '=' , 'role.id')->join('committee', 'user.committee' , '=', 'committee.id')->where("user.role" , $roles->id)->get();
+            $roles->user=User::select(['user.id','user.name','user.email','role.role'])->join('role', 'user.role' , '=' , 'role.id')->join('committee', 'user.committee' , '=', 'committee.id')->where([
+                ["user.role" , $roles->id],
+                ["user.id" , '=' , $id_user]
+                ])->get();
         }
 
         return $query;
@@ -56,13 +59,14 @@ class UserController extends Controller
     {
 
         $email = $request->input('email');
+        $name = $request->input('name');
 
         $user = User::where([
             ['email','=', $email]
-            ])->get();
+            ])->orwhere('name' , $name)->get();
        
         if(sizeof($user) > 0){
-           return \Response::json(['error'=>'El correo ingresado ya se encuentra registrado'],500);
+           return \Response::json(['error'=>'El correo y/o nombre ingresado ya se encuentra registrado'],500);
         }else{
 
          $rules = [
@@ -127,7 +131,48 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        
+        $email = $request->input('email');
+        $name = $request->input('name');
+
+        $user = User::where([
+            ['email','=', $email]
+            ])->orwhere('name',$name)->get();
+       
+        if(sizeof($user) > 0){
+           return \Response::json(['error'=>'El correo y/o nombre ingresado ya se encuentra registrado'],500);
+        }else{
+
+         $rules = [
+
+            'name' => 'required',
+            'email' => 'required',
+            'password' => 'required',
+            'role' => 'required',
+            'committee' => 'required'
+            ];
+ 
+
+         try{
+
+        $validator = \Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return [
+                'actualizado ? ' => false,
+                'errores '  => $validator->errors()->all()
+            ];
+        }
+ 
+        $usuario=User::find($id);
+        $usuario->update($request->all());
+        return ['actualizado ? ' => true];
+
+        } catch (Exception $e) {
+            \Log::info('Error actualizando usuario : '.$e);
+            return \Response::json(['actualizado = ?' => false], 500);
+            }
+        }
+
     }
 
     /**
@@ -138,6 +183,15 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        
+        $user = User::find($id);
+
+        if(!empty($user)){
+            $user->destroy($id);
+            return ['borrado : ' => true];
+        }else{
+            return ['borrado : ' => false];
+        }
+
     }
 }

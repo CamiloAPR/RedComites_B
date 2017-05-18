@@ -17,7 +17,7 @@ class CreateMemberTable extends Migration
             $table->increments('id');
             $table->string('name',50);
             $table->string('email',50);
-            $table->string('phone',20);
+            $table->string('function',50);
             $table->timestamps();
         });
     }

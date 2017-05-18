@@ -52,7 +52,7 @@ class MemberSeeder extends Seeder {
         	array(
                 'name' => 'Clara Nensthiel',
                 'email' => 'eventos.ingenierias@unbosque.edu.co',
-                'phone' => '300'
+                'function' => 'function1'
                 // 'fec_nacimiento' => '01/01/2017',
                 // 'estado' => 'ACTIVO',
                 // 'rol' => 'A'
@@ -113,9 +113,32 @@ class CommitteeSeeder extends Seeder {
 
         DB::table('committee')->insert(
             array(
-                'name' => 'Comité de comunicaciones',
                 'general_info' => 'C comunicaciones',
-                'service' => 'Servicio de comunicaciones',
+                'function' => 'Función de comunicaciones',
+                'banner' => 'banner',
+                'icon' => 'icon',
+                'color' => '#000000',
+                'status' => '1'
+
+            )
+        );
+
+        DB::table('committee')->insert(
+            array(
+                'general_info' => 'C internacionalizacion',
+                'function' => 'Función de internacionalizacion',
+                'banner' => 'banner',
+                'icon' => 'icon',
+                'color' => '#000000',
+                'status' => '1'
+
+            )
+        );
+
+        DB::table('committee')->insert(
+            array(
+                'general_info' => 'C responsabilidad social',
+                'function' => 'Función de responsabilidad social',
                 'banner' => 'banner',
                 'icon' => 'icon',
                 'color' => '#000000',
@@ -143,6 +166,28 @@ class UserSeeder extends Seeder {
 
             )
         );
+
+        DB::table('user')->insert(
+            array(
+                'name' => 'Internacionalizacion',
+                'email' => 'eventos.ingenieriasinter@unbosque.edu.co',
+                'password' => '123456',
+                'role' => '2',
+                'committee' => '2'
+
+            )
+        );
+
+        DB::table('user')->insert(
+            array(
+                'name' => 'Responsabilidad social',
+                'email' => 'eventos.ingenieriasrso@unbosque.edu.co',
+                'password' => '123456',
+                'role' => '2',
+                'committee' => '3'
+
+            )
+        );
     }
 }
 
@@ -160,6 +205,7 @@ class CommitteeMemberSeeder extends Seeder {
 
             )
         );
+
     }
 }
 

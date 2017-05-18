@@ -29,5 +29,7 @@ Route::resource('publication_history','PublicationHistoryController');
 Route::resource('publication_status','PublicationStatusController');
 Route::resource('role','RoleController');
 Route::get('user/user_log/{id}','UserController@indexUser');
+Route::get('publication/committe_id/{id}','Publication@indexCommittee');
+Route::get('committee/committee_id/{id}','CommitteeController@indexCommittee');
 
 
