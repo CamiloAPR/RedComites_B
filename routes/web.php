@@ -31,5 +31,7 @@ Route::resource('role','RoleController');
 Route::get('user/user_log/{id}','UserController@indexUser');
 Route::get('publication/committe_id/{id}','Publication@indexCommittee');
 Route::get('committee/committee_id/{id}','CommitteeController@indexCommittee');
+Route::get('publication/publication_id/{id}','PublicationController@indexPublication');
+Route::get('publication/committee_id/{id}','PublicationController@indexCommittee');
 
 

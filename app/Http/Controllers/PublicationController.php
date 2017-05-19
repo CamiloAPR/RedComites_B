@@ -16,16 +16,47 @@ class PublicationController extends Controller
     public function index()
     {
         
-        // $query = PublicationStatus::orderBy()
+        $query = Committee::select(['user.name' , 'committee.id','committee.banner' , 'committee.icon' , 'committee.color' , 'committee.status'])->join('user', 'committee.id' , '=', 'user.committee')->orderBy('name' ,  'asc')->get();
+        foreach($query as $publications){
+            $publications->publications = Publication::select(['publication.id' , 'publication.title' , 'publication.content' , 'publication.status'
+                ])->join('committee', 'committee.id' , '=' , 'publication.committee')->where('committee.id' , '=',$publications->id)->get();
+        }
+        //$query = PublicationStatus::orderBy();
+
+
+        return $query;
 
     }
 
-    public function indexUser()
+    public function indexPublication($publication_id)
     {
-        
+        $query = Committee::select(['user.name' , 'committee.id','committee.banner' , 'committee.icon' , 'committee.color' , 'committee.status'])->join('user', 'committee.id' , '=', 'user.committee')->join('publication' , 'publication.committee' , '=' , 'committee.id')->where('publication.id' , $publication_id)->orderBy('name' ,  'asc')->get();
+        foreach($query as $publications){
+            $publications->publications = Publication::select(['publication.id' , 'publication.title' , 'publication.content' , 'publication.status'
+                ])->join('committee', 'committee.id' , '=' , 'publication.committee')->where([
+                ['committee.id' , '=',$publications->id],
+                ['publication.id',$publication_id]
+                ])->get();
+        }
 
+        return $query;
 
     }
+
+        public function indexCommittee($committee_id)
+    {
+        $query = Committee::select(['user.name' , 'committee.id','committee.banner' , 'committee.icon' , 'committee.color' , 'committee.status'])->join('user', 'committee.id' , '=', 'user.committee')->where('committee.id' , $committee_id)->orderBy('name' ,  'asc')->get();
+        foreach($query as $publications){
+            $publications->publications = Publication::select(['publication.id' , 'publication.title' , 'publication.content' , 'publication.status'
+                ])->join('committee', 'committee.id' , '=' , 'publication.committee')->where([
+                ['committee.id' , '=',$publications->id]
+                ])->get();
+        }
+
+        return $query;
+
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -34,7 +65,9 @@ class PublicationController extends Controller
      */
     public function create()
     {
-        //
+        
+
+
     }
 
     /**
@@ -46,7 +79,40 @@ class PublicationController extends Controller
     public function store(Request $request)
     {
         
+        $rules = [
 
+            'committee' => 'required',
+            'title' => 'required',
+            'content' => 'required'
+            
+        ];
+
+        $committee = $request->input('committee');
+        $title = $request->input('title');
+        $content = $request->input('content');
+
+        try {
+            
+            $validator = \Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return [
+                    'creado ?' => false,
+                    'errores ' => $validator->errors()->all()
+                ];
+            }
+
+            Publication::insert(
+                array('committee' => $committee,
+                    'title' => $title,
+                    'content' => $content,
+                    'status' => '1')
+                );
+            return ['creado ?' => true];
+
+        } catch (Exception $e) {
+            \Log::info('Error creando publicación :'.$e);
+            return \Response::json(['creado = ?' => false], 500);
+        }
 
     }
 
@@ -82,7 +148,42 @@ class PublicationController extends Controller
     public function update(Request $request, $id)
     {
         
+        $rules = [
 
+            'committee' => 'required',
+            'title' => 'required',
+            'content' => 'required',
+            'status' => 'required'
+            
+        ];
+
+        $committee = $request->input('committee');
+        $title = $request->input('title');
+        $content = $request->input('content');
+        $status = $request->input('status');
+
+        try {
+            
+            $validator = \Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return [
+                    'actualizado ?' => false,
+                    'errores ' => $validator->errors()->all()
+                ];
+            }
+
+            Publication::where('id', $id)->update([
+                'committee' => $committee,
+                    'title' => $title,
+                    'content' => $content,
+                    'status' => $status
+                ]);
+            return ['actualizado ?' => true];
+
+        } catch (Exception $e) {
+            \Log::info('Error creando publicación :'.$e);
+            return \Response::json(['actualizado = ?' => false], 500);
+        }
 
     }
 
@@ -101,9 +202,8 @@ class PublicationController extends Controller
             $publication->destroy($id);
             return ['borrado : ' => true];
         }else{
-            return ['borrado : ' => false]
+            return ['borrado : ' => false];
         }
-
 
     }
 }
