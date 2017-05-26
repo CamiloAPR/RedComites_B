@@ -31,7 +31,7 @@ class CommitteeController extends Controller
         $query = Committee::select(['committee.id' , 'user.name' , 'user.email' , 'user.password', 'general_info' , 'function' , 'banner' , 'icon' , 'color' , 'status'])->join('user', 'committee.id' , '=', 'user.committee')->where('committee.id' , '=' , $committee_id)->orderBy('name' ,  'asc')->get();
 
         foreach ($query as $members){
-            $members->members = CommitteeMember::select(['member.name' , 'member.email' , 'member.phone'])->join('member', 'member.id', '=' , 'committee_member.member')->where('committee_member.committee' , '=' , $members->id)->get();
+            $members->members = CommitteeMember::select(['member.name' , 'member.email' , 'function'])->join('member', 'member.id', '=' , 'committee_member.member')->where('committee_member.committee' , '=' , $members->id)->get();
         }
 
         foreach ($query as $publications){
@@ -209,7 +209,83 @@ class CommitteeController extends Controller
     public function update(Request $request, $id)
     {
         
+        $email = $request->input('email');
+        $name = $request->input('name');
+        $password = $request->input('password');
+        $password_confirm = $request->input('password_confirm');
 
+        $general_info = $request->input('general_info');
+        $function = $request->input('function');
+        $banner = $request->input('banner');
+        $icon = $request->input('icon');
+        $color = $request->input('color');
+        $status = $request->input('status');
+
+
+         $rules = [
+
+            'name' => 'required',
+            'email' => 'required',
+            'password' => 'required',
+            'password_confirm' => 'required',
+            'icon' => 'required',
+            'general_info' => 'required',
+            'function' => 'required',
+            'banner' => 'required',
+            'color' => 'required',
+            'status' => 'required'
+            ];
+ 
+
+         try{
+
+        $validator = \Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return [
+                'actualizado ? ' => false,
+                'errores '  => $validator->errors()->all()
+            ];
+        }
+
+        if($password == $password_confirm){
+
+        Committee::where('id', $id)->update([
+                'general_info' => $general_info,
+                'function' => $function,
+                'banner' => $banner,
+                'icon' => $icon,
+                'color' => $color,
+                'status' => $status
+            ]);
+
+        $queryComm = Committee::select(['id'])->where([
+            ['general_info' , '=' , $general_info],
+            ['function' , '=' , $function],
+            ['banner' , '=' , $banner],
+            ['icon' , '=' , $icon],
+            ['color' , '=' , $color]
+            ])->get();
+
+        foreach($queryComm as $comm){
+        User::where('id' , $comm->id)->update ([
+                'name' => $name,
+                'email' => $email,
+                'password' => $password
+            ]);
+        }
+
+
+        return ['actualizado ? ' => true];
+
+        }else{
+            return \Response::json(['error'=>'Las contraseñas no coinciden'],500);
+        }
+
+        } catch (Exception $e) {
+            \Log::info('Error creando comite : '.$e);
+            return \Response::json(['creado = ?' => false], 500);
+            }
+        
 
     }
 
