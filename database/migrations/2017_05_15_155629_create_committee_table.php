@@ -21,7 +21,7 @@ class CreateCommitteeTable extends Migration
             $table->text('icon');
             $table->string('color',7);
             $table->integer('status');
-            $table->foreign('status')->references('id')->on('committee_status')->onDelete('set null');
+            $table->foreign('status')->references('id')->on('committee_status')->onDelete('cascade');
             $table->timestamps();
         });
     }
