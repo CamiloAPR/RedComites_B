@@ -12,13 +12,6 @@ class VerifyCsrfToken extends BaseVerifier
      * @var array
      */
     protected $except = [
-        'user*',
-        'role*',
-        'publication*',
-        'committee*',
-        'committee_member*',
-        'member*',
-        'committee_status*',
-        'publication_status*'
+        '*'
     ];
 }

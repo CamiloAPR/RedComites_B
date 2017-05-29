@@ -15,11 +15,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('foo2', function () {
-    return 'Hello';
-});
 
 Route::resource('committee','CommitteeController');
+Route::post('login','UserController@login');
 Route::resource('user','UserController');
 Route::resource('committee_member','CommitteeMemberController');
 Route::resource('committee_status','CommitteeStatusController');

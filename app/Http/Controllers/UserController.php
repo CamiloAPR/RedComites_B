@@ -8,6 +8,29 @@ use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
+
+
+
+    public function login(Request $request){
+               
+        $email = strtolower($request->input('email'));
+        $password = $request->input('password');
+     
+        $user =User::where(strtolower('email'),'=',$email)->first();
+
+        if($user!=''){
+
+            if($user->password==$password){
+                return \Response::json($user);
+            }else{
+                return \Response::json(['error'=>'La contraseña que has ingresado es incorrecta!'],500);
+            }
+        }else{
+         
+          return \Response::json(['error'=>'El correo electrónico que has ingresado no coincide con ninguna cuenta!'],500);
+        }
+         
+    }
     /**
      * Display a listing of the resource.
      *
