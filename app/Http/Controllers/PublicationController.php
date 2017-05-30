@@ -45,7 +45,7 @@ class PublicationController extends Controller
 
         public function indexCommittee($committee_id)
     {
-        $query = Committee::select(['user.name' , 'committee.id','committee.banner' , 'committee.icon' , 'committee.color' , 'committee.status'])->join('user', 'committee.id' , '=', 'user.committee')->where('committee.id' , $committee_id)->orderBy('name' ,  'asc')->get();
+        $query = Committee::select(['committee.id', 'user.name' , 'committee.id','committee.banner' , 'committee.icon' , 'committee.color' , 'committee.status'])->join('user', 'committee.id' , '=', 'user.committee')->where('committee.id' , $committee_id)->orderBy('name' ,  'asc')->get();
         foreach($query as $publications){
             $publications->publications = Publication::select(['publication.id' , 'publication.title' , 'publication.content' , 'publication.status'
                 ])->join('committee', 'committee.id' , '=' , 'publication.committee')->where([

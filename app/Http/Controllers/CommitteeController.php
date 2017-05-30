@@ -19,7 +19,7 @@ class CommitteeController extends Controller
     public function index()
     {
         
-        $query = Committee::select(['user.name' , 'user.email' , 'user.password', 'general_info' , 'function' , 'banner' , 'icon' , 'color' , 'status'])->join('user', 'committee.id' , '=', 'user.committee')->orderBy('name' ,  'asc')->get();
+        $query = Committee::select(['committee.id','user.name' , 'user.email' , 'user.password', 'general_info' , 'function' , 'banner' , 'icon' , 'color' , 'status'])->join('user', 'committee.id' , '=', 'user.committee')->orderBy('name' ,  'asc')->get();
 
 
         return $query;
