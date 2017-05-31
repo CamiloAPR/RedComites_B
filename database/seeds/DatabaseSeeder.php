@@ -281,7 +281,7 @@ class UserSeeder extends Seeder {
     {
         DB::table('user')->delete();
 
-DB::table('user')->insert(
+        DB::table('user')->insert(
             array(
                 'name' => 'Comunicaciones',
                 'email' => 'eventos.ingenierias@unbosque.edu.co',
@@ -391,7 +391,6 @@ DB::table('user')->insert(
             )
         );
 
-
         DB::table('user')->insert(
             array(
                 'name' => 'TIC',
@@ -434,11 +433,29 @@ class PublicationSeeder extends Seeder {
         DB::table('publication')->insert(
             array(
                 'committee' => '1',
-                'title' => 'Publicación de comunicación',
-                'content' => 'Contenido de publicación',
+                'title' => '<title>Facultad de ingenier&iacute;a. Escuela de verano</title>',
+                'content' => '<center> <h1>Escuela de verano</h1> <p>Los cursos de la <b>Escuela de Verano</b> est&aacute;n dirigidos a todo el p&uacute;blico interesado en fortalecer tecnolog&iacute;as aplicadas a la tecnolog&iacute;a <br><br> Tienes dos opciones para tomar tu curso: <br><br> <b><center>Grupo A: del 12 al 16 de junio del 2017</center></b> <b><center>Grupo B: del 20 al 23 de junio del 2017</center></b> <br> </p> <table> <tr> <td> <h3>LABVIEW</h3> <p> <b> Curso b&aacute;sico <br> Cupos limitados <br> Curso Avanzado <br></b> <p style="font-size: 1.8vh">Ofrece: Programa Ingenier&iacute;a Electr&oacute;nica</p> </p> </td> <td> <h3>PROTOTIPADO</h3> <ul> <b><li>Impresora 3D</li> <li>CNC</li> <li>Cortadora laser</li> </ul></b> <p style="font-size: 1.8vh">Ofrece: Programa Ingenier&iacute;a Electr&oacute;nica</p> </p> </td> </tr> <tr> <td> <h3>MATLAB B&Aacute;SICO</h3> <p><b>Cupos limitados</b> <ul> <li>Programaci&oacute;n</li> <li>Simulink</li> <li>Matem&aacute;tica aplicada</li> </ul> <p style="font-size: 1.8vh">Ofrece: Programa Ingenier&iacute;a Electr&oacute;nica</p> </p> </td> <td> <h3>Neum&aacute;tica b&aacute;sica</h3> <p>FESTO <ul> <li>Manejo de v&aacute;lvulas <li>Actuadores</li> </ul> Cupos limitados <p style="font-size: 1.8vh">Ofrece: Programa Ingenier&iacute;a Electr&oacute;nica </p></p> </td> </tr> <tr> <td> <h3>ROB&Oacute;TICA PARA NI&Ntilde;OS</h3> <p>Inversi&oacute;n $200.000</p> <ul> <li>Kit del participante</li> <li>Refrigerio</li> </ul> <p style="font-size: 1.8vh;">Ofrece: Programa Ingenier&iacute;a Electr&oacute;nica </p> </td> <td> <h3>INTEGRACI&Oacute;N DE SOFTWARE/HARDWARE (ARDUINO . LABVIEW)</h3> <p>Inversi&oacute;n $200.000<br> <ul> <li>Arduino</li> <li>Materiales</li> </ul> <p style="font-size: 1.8vh">Ofrece: Programa Ingenier&iacute;a Electr&oacute;nica </p></p> </td> </tr> </table> </center> ',
                 'status' => '1'
 
             )
         );
+        DB::table('publication')->insert(
+            array(
+                'committee' => '1',
+                'title' => '<title>Esto fue la Semana de Industrias Creativas / Lanzamiento editorial de la Facultad de Enfermería / Taller Promoción de Alimentos</title>',
+                'content' => '<center> <h1>El Bosque te informa</h1> <table> <tr> <td> <h3>LAS INDUSTRIAS CREATIVAS SE TOMARON LA UNIVERSIDAD EL BOSQUE</h3> <p> la Semana de Industrias Creativas reuni&oacute; lo mejor de la cultura, el arte la m&uacute;sica, el dise&ntilde;o y la comunicaci&oacute;n en la universidad El Bosque. Exposiciones fotogr&aacute;ficas, conciertos, muestras de dise&ntilde;o, charlas, invitados nacionales y extranjeros de gran reconocimiento, hicieron parte de la agenda de la semana. </p> </td> <td> <h3>LANZAMIENTO EDITORIAL FACULTAD DE ENFERMER&Iacute;A</h3> <p>El pasado 6 de mayo se realiz&oacute; la presentaci&oacute;n del libro Modelo de prestaci&oacute;n de servicios de enfermer&iacute;a centrados en la persona y su familia en el carco de la FilBo.</p> </td> </tr> <tr> <td> <h3>Taller promoci&oacute;n del Consumo de Frutas y Verduras</h3> </td> <td> <h3>En Colombia faltan Ingenieros Ambientale para enfrentar desastres naturales</h3> </td> <td> <h3>Acto cultural</h3> </td> </tr> <tr> <td> <h3>AGENDA BIENESTAR UNIVERSITARIO</h3> <p>Participa en el Taller de promoci&oacute;n del Consumo de Frutas y Verduras organizado por Bienestar Universitario hoy a las 12:30 en la Cocineta del segundo piso del Edifico Fundadores. Conoce qu&eacute; se va a preparar y no faltes a esta jornada de nutrici&oacute;n y salud.</p> </td> <td> <h3>EL BOSQUE EN MEDIOS - CANAL ET</h3> <p>Kenneth Ochoa Director del Programa de ingenier&iacute;a Ambiental habl&oacute; con Canal El Tiempo respecto a la necesidad de un mayor n&uacute;mero de ingenieros ambientales en el pa&iacute;s, programa acad&eacute;mico ofrecido por la Universidad El Bosque</p> </td> <td> <h3>LABORATORIO PENSAMIENTO Y LENGUAJES</h3> <p>Asiste hoy al acto de apertura del Laboratorio Pensamiento y Lenguajes. La agenda est&aacute; compuesta por la lectura de textos, palabras sobre el sentido del espacio, los equipos y los libros. Conoce el lugar y los horarios aqu&iacute;.</p> </td> </tr> </table> </center>',
+                'status' => '1'
+
+            )
+        );
+        //         DB::table('publication')->insert(
+        //     array(
+        //         'committee' => '3',
+        //         'title' => '<title>Esto fue la Semana de Industrias Creativas / Lanzamiento editorial de la Facultad de Enfermería / Taller Promoción de Alimentos</title>',
+        //         'content' => '<center> <h1>El Bosque te informa</h1> <table> <tr> <td> <h3>LAS INDUSTRIAS CREATIVAS SE TOMARON LA UNIVERSIDAD EL BOSQUE</h3> <p> la Semana de Industrias Creativas reuni&oacute; lo mejor de la cultura, el arte la m&uacute;sica, el dise&ntilde;o y la comunicaci&oacute;n en la universidad El Bosque. Exposiciones fotogr&aacute;ficas, conciertos, muestras de dise&ntilde;o, charlas, invitados nacionales y extranjeros de gran reconocimiento, hicieron parte de la agenda de la semana. </p> </td> <td> <h3>LANZAMIENTO EDITORIAL FACULTAD DE ENFERMER&Iacute;A</h3> <p>El pasado 6 de mayo se realiz&oacute; la presentaci&oacute;n del libro Modelo de prestaci&oacute;n de servicios de enfermer&iacute;a centrados en la persona y su familia en el carco de la FilBo.</p> </td> </tr> <tr> <td> <h3>Taller promoci&oacute;n del Consumo de Frutas y Verduras</h3> </td> <td> <h3>En Colombia faltan Ingenieros Ambientale para enfrentar desastres naturales</h3> </td> <td> <h3>Acto cultural</h3> </td> </tr> <tr> <td> <h3>AGENDA BIENESTAR UNIVERSITARIO</h3> <p>Participa en el Taller de promoci&oacute;n del Consumo de Frutas y Verduras organizado por Bienestar Universitario hoy a las 12:30 en la Cocineta del segundo piso del Edifico Fundadores. Conoce qu&eacute; se va a preparar y no faltes a esta jornada de nutrici&oacute;n y salud.</p> </td> <td> <h3>EL BOSQUE EN MEDIOS - CANAL ET</h3> <p>Kenneth Ochoa Director del Programa de ingenier&iacute;a Ambiental habl&oacute; con Canal El Tiempo respecto a la necesidad de un mayor n&uacute;mero de ingenieros ambientales en el pa&iacute;s, programa acad&eacute;mico ofrecido por la Universidad El Bosque</p> </td> <td> <h3>LABORATORIO PENSAMIENTO Y LENGUAJES</h3> <p>Asiste hoy al acto de apertura del Laboratorio Pensamiento y Lenguajes. La agenda est&aacute; compuesta por la lectura de textos, palabras sobre el sentido del espacio, los equipos y los libros. Conoce el lugar y los horarios aqu&iacute;.</p> </td> </tr> </table> </center>',
+        //         'status' => '1'
+
+        //     )
+        // );
     }
 }
