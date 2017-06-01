@@ -15,13 +15,8 @@ class PublicationController extends Controller
      */
     public function index()
     {
-        
-        $query = Committee::select(['user.name' , 'committee.id','committee.banner' , 'committee.icon' , 'committee.color' , 'committee.status'])->join('user', 'committee.id' , '=', 'user.committee')->orderBy('name' ,  'asc')->get();
-        foreach($query as $publications){
-            $publications->publications = Publication::select(['publication.id' , 'publication.title' , 'publication.content' , 'publication.status'
-                ])->join('committee', 'committee.id' , '=' , 'publication.committee')->where('committee.id' , '=',$publications->id)->get();
-        }
-        //$query = PublicationStatus::orderBy();
+
+        $query = Committee::select(['user.name' , 'committee.color' , 'publication.id' , 'publication.title', 'publication.content','publication.publication_date', 'publication.status'])->join('user', 'committee.id' , '=', 'user.committee')->join('publication','publication.committee' , '=' , 'committee.id')->orderBy('publication.publication_date' ,  'desc')->get();
 
 
         return $query;
@@ -47,10 +42,10 @@ class PublicationController extends Controller
     {
         $query = Committee::select(['committee.id', 'user.name' , 'committee.id','committee.banner' , 'committee.icon' , 'committee.color' , 'committee.status'])->join('user', 'committee.id' , '=', 'user.committee')->where('committee.id' , $committee_id)->orderBy('name' ,  'asc')->get();
         foreach($query as $publications){
-            $publications->publications = Publication::select(['publication.id' , 'publication.title' , 'publication.content' , 'publication.status'
+            $publications->publications = Publication::select(['publication.id' , 'publication.title' , 'publication.content' , 'publication.publication_date', 'publication.status'
                 ])->join('committee', 'committee.id' , '=' , 'publication.committee')->where([
                 ['committee.id' , '=',$publications->id]
-                ])->get();
+                ])->orderBy('publication.publication_date', 'desc')->get();
         }
 
         return $query;
@@ -65,7 +60,7 @@ class PublicationController extends Controller
      */
     public function create()
     {
-        
+
 
 
     }
@@ -78,21 +73,22 @@ class PublicationController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         $rules = [
 
             'committee' => 'required',
             'title' => 'required',
             'content' => 'required'
-            
+
         ];
 
         $committee = $request->input('committee');
         $title = $request->input('title');
         $content = $request->input('content');
+        $date = $request->input('publication_date');
 
         try {
-            
+
             $validator = \Validator::make($request->all(), $rules);
             if ($validator->fails()) {
                 return [
@@ -105,6 +101,7 @@ class PublicationController extends Controller
                 array('committee' => $committee,
                     'title' => $title,
                     'content' => $content,
+                    'publication_date' => $date,
                     'status' => '1')
                 );
             return ['creado ?' => true];
@@ -147,23 +144,24 @@ class PublicationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
+
         $rules = [
 
             'committee' => 'required',
             'title' => 'required',
             'content' => 'required',
             'status' => 'required'
-            
+
         ];
 
         $committee = $request->input('committee');
         $title = $request->input('title');
         $content = $request->input('content');
+        $date = $request->input('publication_date');
         $status = $request->input('status');
 
         try {
-            
+
             $validator = \Validator::make($request->all(), $rules);
             if ($validator->fails()) {
                 return [
@@ -176,6 +174,7 @@ class PublicationController extends Controller
                 'committee' => $committee,
                     'title' => $title,
                     'content' => $content,
+                    'pubication_date' => $date,
                     'status' => $status
                 ]);
             return ['actualizado ?' => true];
@@ -195,7 +194,7 @@ class PublicationController extends Controller
      */
     public function destroy($id)
     {
-        
+
         $publication = Publication::find($id);
 
         if(!empty($publication)){

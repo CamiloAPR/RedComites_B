@@ -19,6 +19,7 @@ class CreatePublicationTable extends Migration
             $table->foreign('committee')->references('id')->on('committee')->onDelete('set null');
             $table->string('title',255);
             $table->text('content');
+            $table->date('publication_date');
             $table->integer('status');
             $table->foreign('status')->references('id')->on('publication_status')->onDelete('set null');
             $table->timestamps();

@@ -35,7 +35,7 @@ class CommitteeController extends Controller
         }
 
         foreach ($query as $publications){
-            $publications->publications = Publication::select(['title' , 'content' , 'publication.status'])->join('committee', 'committee.id' , '=', 'publication.committee')->where('committee.id' , '=' , $publications->id)->get();
+            $publications->publications = Publication::select(['title' , 'content' , 'publication.publication_date', 'publication.status'])->join('committee', 'committee.id' , '=', 'publication.committee')->where('committee.id' , '=' , $publications->id)->orderBy('publication.publication_date' , 'desc')->get();
         }
 
         return $query;
