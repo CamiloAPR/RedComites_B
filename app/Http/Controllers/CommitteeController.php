@@ -75,15 +75,16 @@ class CommitteeController extends Controller
         $color = $request->input('color');
 
         $user = User::where([
-            ['email','=', $email]
-            ])->orwhere('name',$name)->get();
+            ['email','ilike', $email]
+            ])->orwhere('name','ilike',$name)->get();
 
         $member = Member::where([
-            ['email','=', $member_email]
-            ])->orwhere('name',$member_name)->get();
+            ['email','ilike', $member_email]
+            ])->orwhere('name', 'ilike', $member_name)->get();
+        $count_member = sizeof($member);
 
-        if(sizeof($user) > 0 || sizeof($member) > 0){
-           return \Response::json(['error'=>'El correo y/o nombre ingresado ya se encuentra registrado'],500);
+        if(sizeof($user) > 0){
+           return \Response::json(['error'=>'El correo y/o nombre ingresado del usuario ya se encuentra registrado'],500);
         }else{
 
          $rules = [
@@ -124,11 +125,11 @@ class CommitteeController extends Controller
                 'status' => '1')
             ); 
         $queryComm = Committee::select(['id'])->where([
-            ['general_info' , '=' , $general_info],
-            ['function' , '=' , $function],
-            ['banner' , '=' , $banner],
-            ['icon' , '=' , $icon],
-            ['color' , '=' , $color]
+            ['general_info' , 'ilike' , $general_info],
+            ['function' , 'ilike' , $function],
+            ['banner' , 'ilike' , $banner],
+            ['icon' , 'ilike' , $icon],
+            ['color' , 'ilike' , $color]
             ])->get();
         
         foreach($queryComm as $comm){
@@ -141,15 +142,17 @@ class CommitteeController extends Controller
             );
         }
 
+        if ($count_member < 1){
         Member::insert(
             array('name' => $member_name,
             'email' => $member_email,
             'function' => $member_function )
             );
+        }
 
         $queryMem = Member::select(['id'])->where([
-            ['name' , '=' , $member_name],
-            ['email', '=' , $member_email]
+            ['name' , 'ilike' , $member_name],
+            ['email', 'ilike' , $member_email]
             ])->get();
 
         foreach($queryComm as $com2){
@@ -214,6 +217,10 @@ class CommitteeController extends Controller
         $password = $request->input('password');
         $password_confirm = $request->input('password_confirm');
 
+        $member_name = $request->input('member_name');
+        $member_email = $request->input('member_email');
+        $member_function = $request->input('member_function');
+
         $general_info = $request->input('general_info');
         $function = $request->input('function');
         $banner = $request->input('banner');
@@ -222,12 +229,16 @@ class CommitteeController extends Controller
         $status = $request->input('status');
 
 
+
+
          $rules = [
 
             'name' => 'required',
             'email' => 'required',
             'password' => 'required',
-            'password_confirm' => 'required',
+            'member_name' => 'required',
+            'member_email' => 'required',
+            'member_function' => 'required',
             'icon' => 'required',
             'general_info' => 'required',
             'function' => 'required',
@@ -273,6 +284,32 @@ class CommitteeController extends Controller
                 'password' => $password
             ]);
         }
+
+        $queryMemTotal = Member::get();
+        foreach($queryMemTotal as $qmt){
+            
+        }
+
+        $queryMem = Member::select(['id'])->where([
+            ['email','ilike', $member_email],
+            ['name' , 'ilike', $member_name]
+            ])->get();
+        foreach($queryMem as $mem){
+        CommitteeMember::where([
+            ['committee_member.committee', $id],
+            ['committee_member.member', $mem->id]
+            ])->join('committee' , 'committee.id' , '=', 'committee_member.committee')->join('member' , 'member.id' , '=' , 'committee_member.member')->delete();
+        }
+
+        foreach($queryComm as $com2){
+            foreach ($queryMem as $mem) {
+                CommitteeMember::insert(
+                    array('committee' => $com2->id,
+                        'member' => $mem->id)
+                    );
+            }
+        }
+
 
 
         return ['actualizado ? ' => true];

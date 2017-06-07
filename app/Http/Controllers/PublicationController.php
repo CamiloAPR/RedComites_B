@@ -25,15 +25,8 @@ class PublicationController extends Controller
 
     public function indexPublication($publication_id)
     {
-        $query = Committee::select(['user.name' , 'committee.id','committee.banner' , 'committee.icon' , 'committee.color' , 'committee.status'])->join('user', 'committee.id' , '=', 'user.committee')->join('publication' , 'publication.committee' , '=' , 'committee.id')->where('publication.id' , $publication_id)->orderBy('name' ,  'asc')->get();
-        foreach($query as $publications){
-            $publications->publications = Publication::select(['publication.id' , 'publication.title' , 'publication.content' , 'publication.status'
-                ])->join('committee', 'committee.id' , '=' , 'publication.committee')->where([
-                ['committee.id' , '=',$publications->id],
-                ['publication.id',$publication_id]
-                ])->get();
-        }
-
+        $query = Committee::select(['user.name' , 'committee.color' , 'publication.id' , 'publication.title', 'publication.content','publication.publication_date', 'publication.status'])->join('user', 'committee.id' , '=', 'user.committee')->join('publication','publication.committee' , '=' , 'committee.id')->where('publication.id' , $publication_id)->orderBy('publication.publication_date' ,  'desc')->get();
+        
         return $query;
 
     }
@@ -78,7 +71,8 @@ class PublicationController extends Controller
 
             'committee' => 'required',
             'title' => 'required',
-            'content' => 'required'
+            'content' => 'required',
+            'publication_date' => 'required'
 
         ];
 
@@ -150,7 +144,8 @@ class PublicationController extends Controller
             'committee' => 'required',
             'title' => 'required',
             'content' => 'required',
-            'status' => 'required'
+            'status' => 'required',
+            'publication_date' => 'required'
 
         ];
 
@@ -174,7 +169,7 @@ class PublicationController extends Controller
                 'committee' => $committee,
                     'title' => $title,
                     'content' => $content,
-                    'pubication_date' => $date,
+                    'publication_date' => $date,
                     'status' => $status
                 ]);
             return ['actualizado ?' => true];

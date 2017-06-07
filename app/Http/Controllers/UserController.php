@@ -85,8 +85,8 @@ class UserController extends Controller
         $name = $request->input('name');
 
         $user = User::where([
-            ['email','=', $email]
-            ])->orwhere('name' , $name)->get();
+            ['email','ilike', $email]
+            ])->orwhere('name' , 'ilike', $name)->get();
        
         if(sizeof($user) > 0){
            return \Response::json(['error'=>'El correo y/o nombre ingresado ya se encuentra registrado'],500);
@@ -159,8 +159,12 @@ class UserController extends Controller
         $name = $request->input('name');
 
         $user = User::where([
-            ['email','=', $email]
-            ])->orwhere('name',$name)->get();
+            ['email','ilike', $email], 
+            ['id' , '<>' , $id]
+            ])->orwhere([
+            ['name', 'ilike', $name],
+            ['id' , '<>' , $id]
+            ])->get();
        
         if(sizeof($user) > 0){
            return \Response::json(['error'=>'El correo y/o nombre ingresado ya se encuentra registrado'],500);
