@@ -35,7 +35,7 @@ class CommitteeController extends Controller
         }
 
         foreach ($query as $publications){
-            $publications->publications = Publication::select(['title' , 'content' , 'publication.publication_date', 'publication.status'])->join('committee', 'committee.id' , '=', 'publication.committee')->where('committee.id' , '=' , $publications->id)->orderBy('publication.publication_date' , 'desc')->get();
+            $publications->publications = Publication::select(['publication.id' ,'title' , 'content' , 'publication.publication_date', 'publication.status'])->join('committee', 'committee.id' , '=', 'publication.committee')->where('committee.id' , '=' , $publications->id)->orderBy('publication.publication_date' , 'desc')->get();
         }
 
         return $query;
@@ -64,28 +64,13 @@ class CommitteeController extends Controller
         $password = $request->input('password');
         $password_confirm = $request->input('password_confirm');
 
-        $member_name = $request->input('member_name');
-        $member_email = $request->input('member_email');
-        $member_function = $request->input('member_function');
-
         $general_info = $request->input('general_info');
         $function = $request->input('function');
         $banner = $request->input('banner');
         $icon = $request->input('icon');
         $color = $request->input('color');
 
-        $user = User::where([
-            ['email','ilike', $email]
-            ])->orwhere('name','ilike',$name)->get();
-
-        $member = Member::where([
-            ['email','ilike', $member_email]
-            ])->orwhere('name', 'ilike', $member_name)->get();
-        $count_member = sizeof($member);
-
-        if(sizeof($user) > 0){
-           return \Response::json(['error'=>'El correo y/o nombre ingresado del usuario ya se encuentra registrado'],500);
-        }else{
+        
 
          $rules = [
 
@@ -93,9 +78,7 @@ class CommitteeController extends Controller
             'email' => 'required',
             'password' => 'required',
             'password_confirm' => 'required',
-            'member_name' => 'required',
-            'member_email' => 'required',
-            'member_function' => 'required',
+            'members' => 'required',
             'icon' => 'required',
             'general_info' => 'required',
             'function' => 'required',
@@ -105,6 +88,8 @@ class CommitteeController extends Controller
  
 
          try{
+
+
 
         $validator = \Validator::make($request->all(), $rules);
         if ($validator->fails()) {
@@ -116,7 +101,14 @@ class CommitteeController extends Controller
 
         if($password == $password_confirm){
 
-        Committee::insert(
+        
+        $user = User::where([
+            ['email','ilike', $email]
+            ])->orwhere('name','ilike',$name)->get();
+
+        if(sizeof($user) == 0){
+
+            Committee::insert(
             array('general_info' => $general_info,
                 'function' => $function,
                 'banner' => $banner,
@@ -124,14 +116,14 @@ class CommitteeController extends Controller
                 'color' => $color,
                 'status' => '1')
             ); 
-        $queryComm = Committee::select(['id'])->where([
+            $queryComm = Committee::select(['id'])->where([
             ['general_info' , 'ilike' , $general_info],
             ['function' , 'ilike' , $function],
             ['banner' , 'ilike' , $banner],
             ['icon' , 'ilike' , $icon],
             ['color' , 'ilike' , $color]
             ])->get();
-        
+
         foreach($queryComm as $comm){
         User::insert(
             array('name' => $name,
@@ -141,20 +133,29 @@ class CommitteeController extends Controller
                 'committee' => $comm->id)
             );
         }
+        
+        //JSON object using
+        foreach($request['members'] as $member){
 
-        if ($count_member < 1){
-        Member::insert(
-            array('name' => $member_name,
-            'email' => $member_email,
-            'function' => $member_function )
-            );
+        // //Search for every single member in order to insert those who haven't been inserted in the db
+        $queryMemTotal = Member::where([
+            ['email','ilike', $member['email']],
+            ['name', 'ilike', $member['name']]
+            ])->get();
+        $size = sizeof($queryMemTotal);
+
+        //if doesn't existe, inserts the member
+        if ($size == 0){
+            $this->insertIntoMember($member['name'], $member['email'], $member['function']);
         }
 
+        //searches for the member whether it was inserted or not
         $queryMem = Member::select(['id'])->where([
-            ['name' , 'ilike' , $member_name],
-            ['email', 'ilike' , $member_email]
+            ['email','ilike', $member['email']],
+            ['name' , 'ilike', $member['name']]
             ])->get();
 
+        //creates the relation between the committee and every member entered
         foreach($queryComm as $com2){
             foreach ($queryMem as $mem) {
                 CommitteeMember::insert(
@@ -163,6 +164,11 @@ class CommitteeController extends Controller
                     );
             }
         }
+    }
+    }else{
+            return \Response::json(['error'=>'El usuario ingresado ya existe'],500);
+        }
+
 
         return ['creado ? ' => true];
 
@@ -174,9 +180,6 @@ class CommitteeController extends Controller
             \Log::info('Error creando comite : '.$e);
             return \Response::json(['creado = ?' => false], 500);
             }
-        }
-
-
 
     }
 
@@ -217,10 +220,6 @@ class CommitteeController extends Controller
         $password = $request->input('password');
         $password_confirm = $request->input('password_confirm');
 
-        $member_name = $request->input('member_name');
-        $member_email = $request->input('member_email');
-        $member_function = $request->input('member_function');
-
         $general_info = $request->input('general_info');
         $function = $request->input('function');
         $banner = $request->input('banner');
@@ -229,16 +228,12 @@ class CommitteeController extends Controller
         $status = $request->input('status');
 
 
-
-
          $rules = [
 
             'name' => 'required',
             'email' => 'required',
             'password' => 'required',
-            'member_name' => 'required',
-            'member_email' => 'required',
-            'member_function' => 'required',
+            'members' => 'required',
             'icon' => 'required',
             'general_info' => 'required',
             'function' => 'required',
@@ -258,7 +253,7 @@ class CommitteeController extends Controller
             ];
         }
 
-        if($password == $password_confirm){
+        if((isset($password_confirm) && $password == $password_confirm) || (!isset($password_confirm))){
 
         Committee::where('id', $id)->update([
                 'general_info' => $general_info,
@@ -283,24 +278,34 @@ class CommitteeController extends Controller
                 'email' => $email,
                 'password' => $password
             ]);
-        }
+        }        
 
-        $queryMemTotal = Member::get();
-        foreach($queryMemTotal as $qmt){
-            
-        }
-
-        $queryMem = Member::select(['id'])->where([
-            ['email','ilike', $member_email],
-            ['name' , 'ilike', $member_name]
-            ])->get();
-        foreach($queryMem as $mem){
+        //Deletes all the relations between a given committee and member
         CommitteeMember::where([
-            ['committee_member.committee', $id],
-            ['committee_member.member', $mem->id]
-            ])->join('committee' , 'committee.id' , '=', 'committee_member.committee')->join('member' , 'member.id' , '=' , 'committee_member.member')->delete();
-        }
+            ['committee_member.committee', $id]
+            ])->join('committee' , 'committee.id' , '=', 'committee_member.committee')->delete();
 
+        //JSON object using
+        foreach($request['members'] as $member){
+        //Search for every single member in order to insert those who haven't been inserted in the db
+            $queryMemTotal2 = Member::where([
+            ['email','ilike', $member['email']],
+            ['name', 'ilike', $member['name']]
+            ])->get();
+        
+        //if doesn't exist, inserts the member
+            $size = sizeof($queryMemTotal2);
+            if($size == 0){
+                $this->insertIntoMember($member['name'], $member['email'], $member['function']);
+        }
+        //Search for the member who has the email and name entered
+        $queryMem = Member::select(['id'])->where([
+            ['email','ilike', $member['email']],
+            ['name' , 'ilike', $member['name']]
+            ])->get();
+
+
+        //Finally, inserts again the relations in the committee_member table
         foreach($queryComm as $com2){
             foreach ($queryMem as $mem) {
                 CommitteeMember::insert(
@@ -309,8 +314,7 @@ class CommitteeController extends Controller
                     );
             }
         }
-
-
+    }
 
         return ['actualizado ? ' => true];
 
@@ -324,6 +328,15 @@ class CommitteeController extends Controller
             }
         
 
+    }
+
+    public function insertIntoMember($member_name, $member_email, $member_function)
+    {
+      Member::insert(
+                array('name' => $member_name,
+                'email' => $member_email,
+                'function' => $member_function )
+                );  
     }
 
     /**

@@ -33,13 +33,9 @@ class PublicationController extends Controller
 
         public function indexCommittee($committee_id)
     {
-        $query = Committee::select(['committee.id', 'user.name' , 'committee.id','committee.banner' , 'committee.icon' , 'committee.color' , 'committee.status'])->join('user', 'committee.id' , '=', 'user.committee')->where('committee.id' , $committee_id)->orderBy('name' ,  'asc')->get();
-        foreach($query as $publications){
-            $publications->publications = Publication::select(['publication.id' , 'publication.title' , 'publication.content' , 'publication.publication_date', 'publication.status'
-                ])->join('committee', 'committee.id' , '=' , 'publication.committee')->where([
-                ['committee.id' , '=',$publications->id]
-                ])->orderBy('publication.publication_date', 'desc')->get();
-        }
+        $query = Committee::select(['user.name' , 'committee.color' , 'publication.id' , 'publication.title', 'publication.content','publication.publication_date', 'publication.status'])->join('user', 'committee.id' , '=', 'user.committee')->join('publication','publication.committee' , '=' , 'committee.id')->where([
+            ['committee.id' , $committee_id]
+        ])->orderBy('publication.publication_date' ,  'desc')->get();
 
         return $query;
 
