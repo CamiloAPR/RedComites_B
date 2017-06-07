@@ -116,12 +116,13 @@ class CommitteeController extends Controller
                 'color' => $color,
                 'status' => '1')
             ); 
-            $queryComm = Committee::select(['id'])->where([
+            $queryComm = Committee::select(['committee.id'])->where([
             ['general_info' , 'ilike' , $general_info],
             ['function' , 'ilike' , $function],
             ['banner' , 'ilike' , $banner],
             ['icon' , 'ilike' , $icon],
             ['color' , 'ilike' , $color]
+
             ])->get();
 
         foreach($queryComm as $comm){

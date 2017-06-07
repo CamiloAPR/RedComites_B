@@ -452,6 +452,46 @@ class PublicationSeeder extends Seeder {
 
             )
         );
+        DB::table('publication')->insert(
+            array(
+                'committee' => '11',
+                'title' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ultricies diam arcu, eu aliquam enim semper eu.',
+                'content' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ultricies diam arcu, eu aliquam enim semper eu.',
+                'status' => '1',
+                'publication_date' => '2017-04-22'
+
+            )
+        );
+                DB::table('publication')->insert(
+            array(
+                'committee' => '6',
+                'title' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ultricies diam arcu, eu aliquam enim semper eu.',
+                'content' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ultricies diam arcu, eu aliquam enim semper eu.',
+                'status' => '1',
+                'publication_date' => '2017-06-11'
+
+            )
+        );
+        DB::table('publication')->insert(
+            array(
+                'committee' => '4',
+                'title' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ultricies diam arcu, eu aliquam enim semper eu.',
+                'content' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ultricies diam arcu, eu aliquam enim semper eu.',
+                'status' => '1',
+                'publication_date' => '2016-05-23'
+
+            )
+        );
+        DB::table('publication')->insert(
+            array(
+                'committee' => '2',
+                'title' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ultricies diam arcu, eu aliquam enim semper eu.',
+                'content' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ultricies diam arcu, eu aliquam enim semper eu.',
+                'status' => '1',
+                'publication_date' => '2017-06-01'
+
+            )
+        );
         //         DB::table('publication')->insert(
         //     array(
         //         'committee' => '3',
